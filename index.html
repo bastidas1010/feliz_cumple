@@ -3,102 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Confetti Background with Fixed Dimensions</title>
+<title>Confetti Background with Animated Birthday Title</title>
 <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            background-color: #d8bfd8; /* Morado claro */
-            height: 100vh; /* Fijar altura al 100% del viewport */
-            width: 100vw;  /* Fijar ancho al 100% del viewport */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-        }
-        .confetti {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        .loader {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; 
-            height: 100%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            background-color: black;
-            z-index: 10;
-        }
-        .loader .spinner {
-            border: 8px solid rgba(255, 255, 255, 0.1);
-            border-top: 8px solid white;
-            border-radius: 50%;
-            width: 80px; height: 80px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .fade-out {
-            animation: fadeOut 1s forwards;
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
+    body { 
+        margin: 0; 
+        overflow: hidden; 
+        background-color: #d8bfd8; /* Morado claro */
+        height: 100vh; 
+        width: 100vw;  
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        position: relative; 
+        font-family: 'Arial', sans-serif;
+    }
+    .confetti {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+    .loader {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; 
+        height: 100%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        background-color: black;
+        z-index: 10;
+    }
+    .loader .spinner {
+        border: 8px solid rgba(255, 255, 255, 0.1);
+        border-top: 8px solid white;
+        border-radius: 50%;
+        width: 80px; height: 80px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .fade-out {
+        animation: fadeOut 1s forwards;
+    }
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+    h1 {
+        font-size: 5rem;
+        color: #ff69b4; /* Rosa fuerte */
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4); /* Sombra para profundidad */
+        font-weight: bold;
+        overflow: hidden;
+        visibility: hidden; /* Ocultar el título hasta que termine la animación del loader */
+    }
+    h1 span {
+        display: inline-block;
+        opacity: 0;
+    }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js"></script>
+<!-- Cargando Anime.js desde CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
 <body>
 <div class="loader" id="loader">
     <div class="spinner"></div>
 </div>
 <div class="confetti" id="confetti"></div>
+<h1 id="birthdayTitle">
+    <!-- Separando las letras en spans individuales -->
+    <span>¡</span><span>F</span><span>E</span><span>L</span><span>I</span><span>Z</span><span> </span>
+    <span>C</span><span>U</span><span>M</span><span>P</span><span>L</span><span>E</span><span>A</span><span>Ñ</span><span>O</span><span>S</span><span>!</span>
+</h1>
 
 <script>
-        // GSAP Confetti Animation
-        function createConfetti() {
-            for (let i = 0; i < 100; i++) {
-                let confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.position = 'absolute';
-                confetti.style.width = `${Math.random() * 10 + 5}px`;
-                confetti.style.height = `${Math.random() * 10 + 5}px`;
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.left = `${Math.random() * window.innerWidth}px`;
-                confetti.style.top = `${-50}px`;
-                document.body.appendChild(confetti);
+    // Anime.js Confetti Animation
+    function createConfetti() {
+        for (let i = 0; i < 100; i++) {
+            let confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.position = 'absolute';
+            confetti.style.width = `${Math.random() * 10 + 5}px`;
+            confetti.style.height = `${Math.random() * 10 + 5}px`;
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.left = `${Math.random() * window.innerWidth}px`;
+            confetti.style.top = `${-50}px`;
+            document.body.appendChild(confetti);
 
-                gsap.to(confetti, {
-                    y: window.innerHeight + 50,
-                    x: `+=${Math.random() * 200 - 100}`,
-                    rotation: Math.random() * 360,
-                    duration: Math.random() * 2 + 3,
-                    ease: "power1.inOut",
-                    onComplete: () => confetti.remove()
-                });
-            }
+            anime({
+                targets: confetti,
+                translateY: window.innerHeight + 50,
+                translateX: `+=${Math.random() * 200 - 100}`,
+                rotate: Math.random() * 360,
+                duration: Math.random() * 2000 + 3000,
+                easing: 'easeInOutQuad',
+                complete: () => confetti.remove()
+            });
         }
+    }
 
-        // Loop confetti creation every 0.5 seconds
-        setInterval(createConfetti, 500);
+    // Loop confetti creation every 0.5 seconds
+    setInterval(createConfetti, 500);
 
-        // Simulate loading time
+    // Simulate loading time
+    setTimeout(() => {
+        document.getElementById('loader').classList.add('fade-out');
         setTimeout(() => {
-            document.getElementById('loader').classList.add('fade-out');
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-            }, 1000); // Time for fade-out animation
-        }, 3000); // Simulate 3 seconds loading time
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('birthdayTitle').style.visibility = 'visible'; // Mostrar el título
+            // Anime.js Animation for Title
+            anime({
+                targets: '#birthdayTitle span',
+                opacity: [0, 1],
+                translateX: function() {
+                    return Math.random() > 0.5 ? [-100, 0] : [100, 0]; // Aparece desde la izquierda o derecha
+                },
+                translateY: function() {
+                    return Math.random() > 0.5 ? [-100, 0] : [100, 0]; // Aparece desde arriba o abajo
+                },
+                delay: anime.stagger(200), // Aparece progresivamente
+                duration: 1000,
+                easing: 'easeOutElastic(1, .8)'
+            });
+        }, 1000); // Tiempo para la animación de desvanecimiento del loader
+    }, 3000); // Simular 3 segundos de tiempo de carga
 </script>
 </body>
 </html>
