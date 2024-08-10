@@ -3,10 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Starry Background with Loading Screen</title>
+<title>Confetti Background with Loading Screen</title>
 <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { display: block; }
+        body { margin: 0; overflow: hidden; background-color: #d8bfd8; } /* Morado claro */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+        }
         .loader {
             position: fixed;
             top: 0; left: 0;
@@ -34,56 +43,42 @@
             to { opacity: 0; }
         }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js"></script>
 </head>
 <body>
 <div class="loader" id="loader">
-<div class="spinner"></div>
+    <div class="spinner"></div>
 </div>
+<div class="confetti" id="confetti"></div>
+
 <script>
-        // Create scene
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
- 
-        // Create starry background
-        const starGeometry = new THREE.BufferGeometry();
-        const starCount = 10000;
-        const positions = new Float32Array(starCount * 3);
- 
-        for (let i = 0; i < starCount; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 1000;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 1000;
+        // GSAP Confetti Animation
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                let confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.position = 'absolute';
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.left = `${Math.random() * window.innerWidth}px`;
+                confetti.style.top = `${-50}px`;
+                document.body.appendChild(confetti);
+
+                gsap.to(confetti, {
+                    y: window.innerHeight + 50,
+                    x: `+=${Math.random() * 200 - 100}`,
+                    rotation: Math.random() * 360,
+                    duration: Math.random() * 2 + 3,
+                    ease: "power1.inOut",
+                    onComplete: () => confetti.remove()
+                });
+            }
         }
- 
-        starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5 });
-        const stars = new THREE.Points(starGeometry, starMaterial);
-        scene.add(stars);
- 
-        // Set up camera
-        camera.position.z = 5;
- 
-        // Animate stars
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.x += 0.0005; // Rotate stars to give a slight movement effect
-            stars.rotation.y += 0.0005;
-            renderer.render(scene, camera);
-        }
- 
-        animate();
- 
-        // Resize event
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
- 
+
+        // Loop confetti creation every 0.5 seconds
+        setInterval(createConfetti, 500);
+
         // Simulate loading time
         setTimeout(() => {
             document.getElementById('loader').classList.add('fade-out');
