@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starry Background with Loading Screen</title>
+<style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+        .loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            background-color: black;
+            z-index: 10;
+        }
+        .loader .spinner {
+            border: 8px solid rgba(255, 255, 255, 0.1);
+            border-top: 8px solid white;
+            border-radius: 50%;
+            width: 80px; height: 80px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-out {
+            animation: fadeOut 1s forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<div class="loader" id="loader">
+<div class="spinner"></div>
+</div>
+<script>
+        // Create scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+ 
+        // Create starry background
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 10000;
+        const positions = new Float32Array(starCount * 3);
+ 
+        for (let i = 0; i < starCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 1000;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 1000;
+        }
+ 
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5 });
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+ 
+        // Set up camera
+        camera.position.z = 5;
+ 
+        // Animate stars
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.x += 0.0005; // Rotate stars to give a slight movement effect
+            stars.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+ 
+        animate();
+ 
+        // Resize event
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+ 
+        // Simulate loading time
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+            }, 1000); // Time for fade-out animation
+        }, 3000); // Simulate 3 seconds loading time
+</script>
+</body>
+</html>
