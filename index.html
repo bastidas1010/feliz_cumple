@@ -97,10 +97,39 @@
         font-size: 16px;
         border-radius: 5px;
     }
-    .music-player .song-title {
+    .now-playing {
         margin-left: 10px;
-        font-size: 18px;
-        font-weight: bold;
+        font-size: 16px;
+    }
+
+    /* Estilo para el mensaje de cumpleaños */
+    .birthday-message {
+        background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        padding: 20px;
+        border-radius: 10px;
+        color: #fff;
+        font-family: 'Brush Script MT', cursive;
+        font-size: 1.5rem;
+        text-align: center;
+        margin-top: 20px;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    /* Animación del mensaje */
+    @keyframes slideUpFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message-visible {
+        animation: slideUpFadeIn 1s ease-out forwards;
     }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
@@ -115,12 +144,19 @@
     <span>C</span><span>U</span><span>M</span><span>P</span><span>L</span><span>E</span><span>A</span><span>Ñ</span><span>O</span><span>S</span><span>!</span>
 </h1>
 
+<!-- Mensaje de cumpleaños -->
+<div class="birthday-message" id="birthdayMessage">
+    Que este nuevo año de vida esté lleno de bendiciones, amor y alegría. Que Dios te guíe y proteja siempre.<br>
+    "El Señor te bendiga y te guarde; el Señor haga resplandecer su rostro sobre ti, y tenga de ti misericordia."<br>
+    <strong>- Números 6:24-25</strong>
+</div>
+
 <!-- Reproductor de música -->
 <div class="music-player">
     <button onclick="prevSong()">⏮️</button>
     <button onclick="togglePlayPause()">⏯️</button>
     <button onclick="nextSong()">⏭️</button>
-    <div class="song-title" id="songTitle">Ahora sonando: </div>
+    <div class="now-playing" id="nowPlaying">Ahora sonando: Feliz cumpleaños</div>
     <audio id="audioPlayer"></audio>
 </div>
 
@@ -170,59 +206,56 @@
                 duration: 1000,
                 easing: 'easeOutElastic(1, .8)'
             });
-            // Iniciar reproducción de música automáticamente después del loader
-            audioPlayer.play();
+            document.getElementById('birthdayMessage').classList.add('message-visible');
         }, 1000);
     }, 3000);
 
     
     // Reproductor de música
     const songs = [
-        {
-            src: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Cumplea%C3%B1os%20feliz%20con%20Piano%20y%20Violin%2C%20precioso.mp3",
-            title: "Feliz Cumpleaños"
-        },
-        {
-            src: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Germ%C3%A1n%20Barcel%C3%B3%2C%20Manuel%20Wirzt-Que%20se%20cumplan%20tus%20sue%C3%B1os%20(Official%20Video).mp3",
-            title: "¡Que se cumplan tus sueños!"
-        },
-        {
-            src: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/ramdomly%20(online-audio-converter.com).mp3",
-            title: "Nicolle"
-        }
+        "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Cumplea%C3%B1os%20feliz%20con%20Piano%20y%20Violin%2C%20precioso.mp3",
+        "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Germ%C3%A1n%20Barcel%C3%B3%2C%20Manuel%20Wirzt-Que%20se%20cumplan%20tus%20sue%C3%B1os%20(Official%20Video).mp3",
+        "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/ramdomly%20(online-audio-converter.com).mp3"
     ];
     let currentSong = 0;
     const audioPlayer = document.getElementById('audioPlayer');
-    const songTitle = document.getElementById('songTitle');
+    const nowPlaying = document.getElementById('nowPlaying');
 
     function loadSong(index) {
-        audioPlayer.src = songs[index].src;
-        songTitle.textContent = "Ahora sonando: " + songs[index].title;
+        audioPlayer.src = songs[index];
         audioPlayer.play();
+        updateNowPlaying(index);
     }
 
-    function togglePlayPause() {
-        if (audioPlayer.paused) {
-            audioPlayer.play();
-        } else {
-            audioPlayer.pause();
-        }
+    function updateNowPlaying(index) {
+        const titles = [
+            "Ahora sonando: Feliz cumpleaños",
+            "Ahora sonando: ¡Que se cumplan tus sueños!",
+            "Ahora sonando: Nicolle"
+        ];
+        nowPlaying.textContent = titles[index];
+}
+
+function togglePlayPause() {
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+    } else {
+        audioPlayer.pause();
     }
+}
 
-    function nextSong() {
-        currentSong = (currentSong + 1) % songs.length;
-        loadSong(currentSong);
-    }
-
-    function prevSong() {
-        currentSong = (currentSong - 1 + songs.length) % songs.length;
-        loadSong(currentSong);
-    }
-
-    audioPlayer.addEventListener('ended', nextSong);
-
-    // Cargar la primera canción al iniciar
+function nextSong() {
+    currentSong = (currentSong + 1) % songs.length;
     loadSong(currentSong);
+}
+
+function prevSong() {
+    currentSong = (currentSong - 1 + songs.length) % songs.length;
+    loadSong(currentSong);
+}
+
+// Cargar la primera canción al iniciar
+loadSong(currentSong);
 </script>
 </body>
 </html>
