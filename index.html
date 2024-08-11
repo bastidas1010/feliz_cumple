@@ -125,12 +125,8 @@
             anime({
                 targets: '#birthdayTitle span',
                 opacity: [0, 1],
-                translateX: function() {
-                    return Math.random() > 0.5 ? [-100, 0] : [100, 0]; // Aparece desde la izquierda o derecha
-                },
-                translateY: function() {
-                    return Math.random() > 0.5 ? [-100, 0] : [100, 0]; // Aparece desde arriba o abajo
-                },
+                translateX: [-100, 0], // Aparece desde la izquierda
+                translateY: [100, 0], // Aparece desde abajo
                 delay: anime.stagger(200), // Aparece progresivamente
                 duration: 1000,
                 easing: 'easeOutElastic(1, .8)'
