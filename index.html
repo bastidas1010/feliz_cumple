@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>¡Feliz Dia!</title>
+<title>¡Feliz día!</title>
 <style>
     body {
         margin: 0;
@@ -67,6 +67,7 @@
         font-weight: bold;
         overflow: hidden;
         visibility: hidden;
+        margin-top: 20px; /* Espacio adicional para dispositivos móviles */
     }
     h1 span {
         display: inline-block;
@@ -111,9 +112,10 @@
         font-family: 'Brush Script MT', cursive;
         font-size: 1.5rem;
         text-align: center;
-        margin-top: 20px;
+        margin-top: 40px; /* Espacio adicional para evitar superposición */
         opacity: 0;
         transform: translateY(20px);
+        z-index: 2;
     }
 
     /* Animación del mensaje */
@@ -131,6 +133,31 @@
     .message-visible {
         animation: slideUpFadeIn 1s ease-out forwards;
     }
+
+    /* Emojis animados en las esquinas */
+    .emoji {
+        position: fixed;
+        font-size: 2rem;
+        z-index: 2;
+    }
+    .emoji.top-left { top: 10px; left: 10px; }
+    .emoji.top-right { top: 10px; right: 10px; }
+    .emoji.bottom-left { bottom: 10px; left: 10px; }
+    .emoji.bottom-right { bottom: 10px; right: 10px; }
+    
+    /* Animación de emojis */
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .emoji {
+        animation: bounce 2s infinite;
+    }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
@@ -144,7 +171,11 @@
     <span>C</span><span>U</span><span>M</span><span>P</span><span>L</span><span>E</span><span>A</span><span>Ñ</span><span>O</span><span>S</span><span>!</span>
 </h1>
 
-<br>
+<!-- Emojis en las esquinas -->
+<div class="emoji top-left">🎉</div>
+<div class="emoji top-right">🎂</div>
+<div class="emoji bottom-left">🎁</div>
+<div class="emoji bottom-right">🎈</div>
 
 <!-- Mensaje de cumpleaños -->
 <div class="birthday-message" id="birthdayMessage">
@@ -212,7 +243,6 @@
         }, 1000);
     }, 3000);
 
-    
     // Reproductor de música
     const songs = [
         "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Cumplea%C3%B1os%20feliz%20con%20Piano%20y%20Violin%2C%20precioso.mp3",
@@ -236,28 +266,28 @@
             "Ahora sonando: Nicolle"
         ];
         nowPlaying.textContent = titles[index];
-}
-
-function togglePlayPause() {
-    if (audioPlayer.paused) {
-        audioPlayer.play();
-    } else {
-        audioPlayer.pause();
     }
-}
 
-function nextSong() {
-    currentSong = (currentSong + 1) % songs.length;
+    function togglePlayPause() {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+        } else {
+            audioPlayer.pause();
+        }
+    }
+
+    function nextSong() {
+        currentSong = (currentSong + 1) % songs.length;
+        loadSong(currentSong);
+    }
+
+    function prevSong() {
+        currentSong = (currentSong - 1 + songs.length) % songs.length;
+        loadSong(currentSong);
+    }
+
+    // Cargar la primera canción al iniciar
     loadSong(currentSong);
-}
-
-function prevSong() {
-    currentSong = (currentSong - 1 + songs.length) % songs.length;
-    loadSong(currentSong);
-}
-
-// Cargar la primera canción al iniciar
-loadSong(currentSong);
 </script>
 </body>
 </html>
