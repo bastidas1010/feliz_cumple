@@ -67,7 +67,7 @@
         font-weight: bold;
         overflow: hidden;
         visibility: hidden;
-        margin-top: 20px; /* Espacio adicional para dispositivos móviles */
+        margin-bottom: 50px; /* Aumentar espacio entre título y mensaje */
     }
     h1 span {
         display: inline-block;
@@ -112,7 +112,6 @@
         font-family: 'Brush Script MT', cursive;
         font-size: 1.5rem;
         text-align: center;
-        margin-top: 40px; /* Espacio adicional para evitar superposición */
         opacity: 0;
         transform: translateY(20px);
         z-index: 2;
@@ -134,32 +133,58 @@
         animation: slideUpFadeIn 1s ease-out forwards;
     }
 
-    /* Emojis animados en las esquinas */
-    .emoji {
-        position: fixed;
-        font-size: 2rem;
-        z-index: 2;
-    }
-    .emoji.top-left { top: 10px; left: 10px; }
-    .emoji.top-right { top: 10px; right: 10px; }
-    .emoji.bottom-left { bottom: 10px; left: 10px; }
-    .emoji.bottom-right { bottom: 10px; right: 10px; }
-    
-    /* Animación de emojis */
-    @keyframes bounce {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-10px);
-        }
+    /* Estilo para los globos */
+    .balloon {
+        position: absolute;
+        bottom: -150px;
+        width: 40px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: red;
+        z-index: 0;
     }
 
+    /* Añadir colas cortas a los globos */
+    .balloon::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 2px;
+        height: 20px;
+        background-color: #555;
+        transform: translateX(-50%);
+    }
+
+    /* Emojis de esquina */
     .emoji {
-        animation: bounce 2s infinite;
+        position: fixed;
+        font-size: 2.5rem;
+        z-index: 2;
+    }
+
+    .emoji.top-left {
+        top: 10px;
+        left: 10px;
+    }
+
+    .emoji.top-right {
+        top: 10px;
+        right: 10px;
+    }
+
+    .emoji.bottom-left {
+        bottom: 10px;
+        left: 10px;
+    }
+
+    .emoji.bottom-right {
+        bottom: 10px;
+        right: 10px;
     }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.2/gsap.min.js"></script>
 </head>
 <body>
 <div class="loader" id="loader">
@@ -170,12 +195,6 @@
     <span>¡</span><span>F</span><span>E</span><span>L</span><span>I</span><span>Z</span><span> </span>
     <span>C</span><span>U</span><span>M</span><span>P</span><span>L</span><span>E</span><span>A</span><span>Ñ</span><span>O</span><span>S</span><span>!</span>
 </h1>
-
-<!-- Emojis en las esquinas -->
-<div class="emoji top-left">🎉</div>
-<div class="emoji top-right">🎂</div>
-<div class="emoji bottom-left">🎁</div>
-<div class="emoji bottom-right">🎈</div>
 
 <!-- Mensaje de cumpleaños -->
 <div class="birthday-message" id="birthdayMessage">
@@ -192,6 +211,12 @@
     <div class="now-playing" id="nowPlaying">Ahora sonando: Feliz cumpleaños</div>
     <audio id="audioPlayer"></audio>
 </div>
+
+<!-- Emojis en las esquinas -->
+<div class="emoji top-left">🎉</div>
+<div class="emoji top-right">🎂</div>
+<div class="emoji bottom-left">🎁</div>
+<div class="emoji bottom-right">🎈</div>
 
 <script>
     // Anime.js Confetti Animation
@@ -240,32 +265,53 @@
                 easing: 'easeOutElastic(1, .8)'
             });
             document.getElementById('birthdayMessage').classList.add('message-visible');
+            audioPlayer.play();
         }, 1000);
     }, 3000);
 
-    // Reproductor de música
-    const songs = [
-        "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Cumplea%C3%B1os%20feliz%20con%20Piano%20y%20Violin%2C%20precioso.mp3",
-        "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Germ%C3%A1n%20Barcel%C3%B3%2C%20Manuel%20Wirzt-Que%20se%20cumplan%20tus%20sue%C3%B1os%20(Official%20Video).mp3",
-        "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/ramdomly%20(online-audio-converter.com).mp3"
-    ];
-    let currentSong = 0;
-    const audioPlayer = document.getElementById('audioPlayer');
-    const nowPlaying = document.getElementById('nowPlaying');
+    // GSAP Balloons Animation
+    function createBalloon() {
+        const balloon = document.createElement('div');
+        balloon.classList.add('balloon');
+        balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        balloon.style.left = `${Math.random() * window.innerWidth}px`;
+        document.body.appendChild(balloon);
 
-    function loadSong(index) {
-        audioPlayer.src = songs[index];
-        audioPlayer.play();
-        updateNowPlaying(index);
+        gsap.to(balloon, {
+            y: -window.innerHeight - 150,
+            x: `+=${Math.random() * 100 - 50}`,
+            duration: Math.random() * 5 + 5,
+            ease: 'linear',
+            onComplete: () => balloon.remove()
+        });
     }
 
-    function updateNowPlaying(index) {
-        const titles = [
-            "Ahora sonando: Feliz cumpleaños",
-            "Ahora sonando: ¡Que se cumplan tus sueños!",
-            "Ahora sonando: Nicolle"
-        ];
-        nowPlaying.textContent = titles[index];
+    setInterval(createBalloon, 500);
+
+    // Music Player
+    const audioPlayer = document.getElementById('audioPlayer');
+    const nowPlaying = document.getElementById('nowPlaying');
+    let songIndex = 0;
+    const songs = [
+        {
+            title: "Feliz cumpleaños",
+            url: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Cumplea%C3%B1os%20feliz%20con%20Piano%20y%20Violin%2C%20precioso.mp3"
+        },
+        {
+            title: "Que los cumplas feliz",
+            url: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Germ%C3%A1n%20Barcel%C3%B3%2C%20Manuel%20Wirzt-Que%20se%20cumplan%20tus%20sue%C3%B1os%20(Official%20Video).mp3"
+        },
+        {
+            title: "Cumpleaños feliz",
+            url: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/ramdomly%20(online-audio-converter.com).mp3"
+        }
+    ];
+
+    function loadSong(index) {
+        const song = songs[index];
+        audioPlayer.src = song.url;
+        nowPlaying.textContent = `Ahora sonando: ${song.title}`;
+        audioPlayer.play();
     }
 
     function togglePlayPause() {
@@ -276,18 +322,19 @@
         }
     }
 
-    function nextSong() {
-        currentSong = (currentSong + 1) % songs.length;
-        loadSong(currentSong);
-    }
-
     function prevSong() {
-        currentSong = (currentSong - 1 + songs.length) % songs.length;
-        loadSong(currentSong);
+        songIndex = (songIndex - 1 + songs.length) % songs.length;
+        loadSong(songIndex);
     }
 
-    // Cargar la primera canción al iniciar
-    loadSong(currentSong);
+    function nextSong() {
+        songIndex = (songIndex + 1) % songs.length;
+        loadSong(songIndex);
+    }
+
+    audioPlayer.addEventListener('ended', nextSong);
+
+    loadSong(songIndex);
 </script>
 </body>
 </html>
