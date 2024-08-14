@@ -67,7 +67,7 @@
         font-weight: bold;
         overflow: hidden;
         visibility: hidden;
-        margin-bottom: 110px; /* Se incrementó el margen para evitar superposición */
+        margin-bottom: 80px; /* Se incrementó el margen para evitar superposición */
     }
     h1 span {
         display: inline-block;
@@ -187,13 +187,17 @@
         bottom: 10px;
         right: 10px;
     }
+    .loader .loader-img {
+    width: 700px; /* Ajusta el ancho deseado */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.2/gsap.min.js"></script>
 </head>
 <body>
 <div class="loader" id="loader">
-    <div class="spinner"></div>
+    <img src="https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/nota_importante.png" alt="Cargando..." class="loader-img">
 </div>
 <div class="confetti" id="confetti"></div>
 <h1 id="birthdayTitle">
@@ -259,7 +263,7 @@
             animateTitle();
         }, 1000);
         playMusic(); // Iniciar la música automáticamente después del loader
-    }, 3000);
+    }, 5000);
 
     // GSAP Animación del título
     function animateTitle() {
