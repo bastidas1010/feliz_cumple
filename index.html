@@ -67,7 +67,7 @@
         font-weight: bold;
         overflow: hidden;
         visibility: hidden;
-        margin-bottom: 70px; /* Aumentar espacio entre título y mensaje */
+        margin-bottom: 80px; /* Se incrementó el margen para evitar superposición */
     }
     h1 span {
         display: inline-block;
@@ -97,6 +97,11 @@
         cursor: pointer;
         font-size: 16px;
         border-radius: 5px;
+        transition: all 0.3s ease; /* Transición para el efecto de brillo */
+    }
+    .music-player button:hover {
+        background-color: #ff85a2;
+        box-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4; /* Efecto de brillo */
     }
     .now-playing {
         margin-left: 10px;
@@ -251,66 +256,69 @@
         setTimeout(() => {
             document.getElementById('loader').style.display = 'none';
             document.getElementById('birthdayTitle').style.visibility = 'visible';
-            anime({
-                targets: '#birthdayTitle span',
-                opacity: [0, 1],
-                translateX: function() {
-                    return Math.random() > 0.5 ? [-100, 0] : [100, 0];
-                },
-                translateY: function() {
-                    return Math.random() > 0.5 ? [-100, 0] : [100, 0];
-                },
-                delay: anime.stagger(200),
-                duration: 1000,
-                easing: 'easeOutElastic(1, .8)'
-            });
-            document.getElementById('birthdayMessage').classList.add('message-visible');
-            audioPlayer.play();
+            animateTitle();
         }, 1000);
+        playMusic(); // Iniciar la música automáticamente después del loader
     }, 3000);
 
-    // GSAP Balloons Animation
-    function createBalloon() {
-        const balloon = document.createElement('div');
-        balloon.classList.add('balloon');
-        balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
-        balloon.style.left = `${Math.random() * window.innerWidth}px`;
-        document.body.appendChild(balloon);
-
-        gsap.to(balloon, {
-            y: -window.innerHeight - 150,
-            x: `+=${Math.random() * 100 - 50}`,
-            duration: Math.random() * 5 + 5,
-            ease: 'linear',
-            onComplete: () => balloon.remove()
+    // GSAP Animación del título
+    function animateTitle() {
+        gsap.fromTo("#birthdayTitle span", { opacity: 0, y: -50 }, {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.5,
+            ease: "back.out(1.7)",
+            onComplete: () => {
+                document.getElementById('birthdayMessage').classList.add('message-visible');
+                animateBalloons(); // Iniciar animación de globos después del título
+            }
         });
     }
 
-    setInterval(createBalloon, 500);
+    // GSAP Animación de los globos
+    function animateBalloons() {
+        const colors = ['#ff69b4', '#ff4500', '#ffa500', '#ff6347', '#ff1493', '#ffd700'];
+        for (let i = 0; i < 30; i++) {
+            let balloon = document.createElement('div');
+            balloon.classList.add('balloon');
+            balloon.style.left = `${Math.random() * 100}vw`;
+            balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(balloon);
 
-    // Music Player
+            gsap.to(balloon, {
+                y: -window.innerHeight - 100,
+                duration: Math.random() * 5 + 5,
+                ease: "power1.inOut",
+                repeat: -1,
+                delay: Math.random() * 2,
+                onComplete: () => balloon.remove()
+            });
+        }
+    }
+
+    // Reproductor de música
     const audioPlayer = document.getElementById('audioPlayer');
     const nowPlaying = document.getElementById('nowPlaying');
-    let songIndex = 0;
+    let currentSong = 0;
     const songs = [
         {
             title: "Feliz cumpleaños",
             url: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Cumplea%C3%B1os%20feliz%20con%20Piano%20y%20Violin%2C%20precioso.mp3"
         },
         {
-            title: "Que los cumplas feliz",
+            title: "Cumpleaños feliz",
             url: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/Germ%C3%A1n%20Barcel%C3%B3%2C%20Manuel%20Wirzt-Que%20se%20cumplan%20tus%20sue%C3%B1os%20(Official%20Video).mp3"
         },
         {
-            title: "Cumpleaños feliz",
+            title: "Que los cumplas feliz",
             url: "https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/ramdomly%20(online-audio-converter.com).mp3"
         }
     ];
 
-    function loadSong(index) {
-        const song = songs[index];
-        audioPlayer.src = song.url;
-        nowPlaying.textContent = `Ahora sonando: ${song.title}`;
+    function playMusic() {
+        audioPlayer.src = songs[currentSong].url;
+        nowPlaying.textContent = `Ahora sonando: ${songs[currentSong].title}`;
         audioPlayer.play();
     }
 
@@ -323,18 +331,16 @@
     }
 
     function prevSong() {
-        songIndex = (songIndex - 1 + songs.length) % songs.length;
-        loadSong(songIndex);
+        currentSong = (currentSong - 1 + songs.length) % songs.length;
+        playMusic();
     }
 
     function nextSong() {
-        songIndex = (songIndex + 1) % songs.length;
-        loadSong(songIndex);
+        currentSong = (currentSong + 1) % songs.length;
+        playMusic();
     }
 
     audioPlayer.addEventListener('ended', nextSong);
-
-    loadSong(songIndex);
 </script>
 </body>
 </html>
