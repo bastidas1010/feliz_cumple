@@ -190,8 +190,16 @@
     .loader .loader-img {
     width: 700px; /* Ajusta el ancho deseado */
     height: auto; /* Mantiene la proporción de la imagen */
+    }
+    /* Estilo inicial de la imagen (oculta y desplazada hacia abajo) */
+    #birthdayImage {
+    opacity: 0;
+    transform: translateY(20px);
+    z-index: 2;
+    
 }
 </style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.2/gsap.min.js"></script>
 </head>
@@ -205,8 +213,9 @@
     <span>C</span><span>U</span><span>M</span><span>P</span><span>L</span><span>E</span><span>A</span><span>Ñ</span><span>O</span><span>S</span><span>!</span>
 </h1>
 
-<!-- Inserta la imagen aquí -->
-<img src="https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/nube_de_ideas.png" alt="Nube de Ideas" style="width: 300px; height: auto; margin-bottom: 0px;">
+<!-- Inserta la imagen de cumpleaños aquí -->
+<img id="birthdayImage" src="https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/nube_de_ideas.png" alt="Nube de Ideas" style="width: 300px; height: auto; margin-bottom: 0px;">
+
 
 <!-- Mensaje de cumpleaños -->
 <div class="birthday-message" id="birthdayMessage">
@@ -269,19 +278,28 @@
     }, 5000);
 
     // GSAP Animación del título
-    function animateTitle() {
-        gsap.fromTo("#birthdayTitle span", { opacity: 0, y: -50 }, {
-            opacity: 1,
-            y: 0,
-            stagger: 0.1,
-            duration: 0.5,
-            ease: "back.out(1.7)",
-            onComplete: () => {
-                document.getElementById('birthdayMessage').classList.add('message-visible');
-                animateBalloons(); // Iniciar animación de globos después del título
-            }
-        });
-    }
+function animateTitle() {
+    gsap.fromTo("#birthdayTitle span", { opacity: 0, y: -50 }, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: "back.out(1.7)",
+        onComplete: () => {
+            // Animar la imagen de cumpleaños
+            gsap.to("#birthdayImage", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out"
+            });
+
+            document.getElementById('birthdayMessage').classList.add('message-visible');
+            animateBalloons(); // Iniciar animación de globos después del título
+        }
+    });
+}
+
 
     // GSAP Animación de los globos
     function animateBalloons() {
