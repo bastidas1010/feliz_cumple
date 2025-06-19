@@ -217,36 +217,36 @@
         }
         
         function generateSunflower() {
-            const btn = document.getElementById('generateBtn');
-            const loading = document.getElementById('loading');
-            const image = document.getElementById('sunflowerImage');
-            
-            // Mostrar loading
-            btn.disabled = true;
-            loading.style.display = 'block';
-            image.style.display = 'none';
-            image.classList.remove('show');
-            
-            // Generar girasol
-            fetch('/generate_sunflower')
-                .then(response => response.text())
-                .then(data => {
-                    loading.style.display = 'none';
-                    image.src = data;
-                    image.style.display = 'block';
-                    setTimeout(() => {
-                        image.classList.add('show');
-                    }, 100);
-                    btn.disabled = false;
-                    btn.textContent = '🌻 Crear Otro Girasol 🌻';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    loading.style.display = 'none';
-                    btn.disabled = false;
-                    alert('Error al crear el girasol. Por favor, intenta de nuevo.');
-                });
-        }
+    const btn = document.getElementById('generateBtn');
+    const loading = document.getElementById('loading');
+    const image = document.getElementById('sunflowerImage');
+    
+    // Mostrar loading
+    btn.disabled = true;
+    loading.style.display = 'block';
+    image.style.display = 'none';
+    image.classList.remove('show');
+    
+    // Generar girasol
+    fetch('/generate_sunflower')
+        .then(response => response.json())
+        .then(data => {
+            loading.style.display = 'none';
+            image.src = data.image_url;
+            image.style.display = 'block';
+            setTimeout(() => {
+                image.classList.add('show');
+            }, 100);
+            btn.disabled = false;
+            btn.textContent = '🌻 Crear Otro Girasol 🌻';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loading.style.display = 'none';
+            btn.disabled = false;
+            alert('Error al crear el girasol. Por favor, intenta de nuevo.');
+        });
+}
         
         // Inicializar partículas
         createParticles();
