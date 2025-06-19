@@ -18,6 +18,72 @@
         position: relative;
         font-family: 'Arial', sans-serif;
     }
+    
+    /* Estilo del menú */
+    .menu {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 100;
+    }
+    
+    .menu-button {
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .menu-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+    }
+    
+    .menu-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        min-width: 200px;
+    }
+    
+    .menu-dropdown.active {
+        opacity: 1;
+        transform: translateY(5px);
+        pointer-events: all;
+    }
+    
+    .menu-item {
+        display: block;
+        padding: 15px 20px;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .menu-item:hover {
+        background-color: #ff69b4;
+        color: white;
+    }
+    
+    .menu-item:last-child {
+        border-bottom: none;
+    }
+    
     .confetti {
         position: fixed;
         top: 0;
@@ -67,14 +133,13 @@
         font-weight: bold;
         overflow: hidden;
         visibility: hidden;
-        margin-bottom: 5px; /* Se incrementó el margen para evitar superposición */
+        margin-bottom: 5px;
     }
     h1 span {
         display: inline-block;
         opacity: 0;
     }
 
-    /* Estilo para el reproductor de música */
     .music-player {
         position: fixed;
         bottom: 0;
@@ -97,18 +162,17 @@
         cursor: pointer;
         font-size: 16px;
         border-radius: 5px;
-        transition: all 0.3s ease; /* Transición para el efecto de brillo */
+        transition: all 0.3s ease;
     }
     .music-player button:hover {
         background-color: #ff85a2;
-        box-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4; /* Efecto de brillo */
+        box-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4;
     }
     .now-playing {
         margin-left: 10px;
         font-size: 16px;
     }
 
-    /* Estilo para el mensaje de cumpleaños */
     .birthday-message {
         background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
         padding: 20px;
@@ -122,7 +186,6 @@
         z-index: 2;
     }
 
-    /* Animación del mensaje */
     @keyframes slideUpFadeIn {
         from {
             opacity: 0;
@@ -138,7 +201,6 @@
         animation: slideUpFadeIn 1s ease-out forwards;
     }
 
-    /* Estilo para los globos */
     .balloon {
         position: absolute;
         bottom: -150px;
@@ -149,7 +211,6 @@
         z-index: 0;
     }
 
-    /* Añadir colas cortas a los globos */
     .balloon::after {
         content: '';
         position: absolute;
@@ -161,7 +222,6 @@
         transform: translateX(-50%);
     }
 
-    /* Emojis de esquina */
     .emoji {
         position: fixed;
         font-size: 2.5rem;
@@ -188,43 +248,48 @@
         right: 10px;
     }
     .loader .loader-img {
-    width: 700px; /* Ajusta el ancho deseado */
-    height: auto; /* Mantiene la proporción de la imagen */
+    width: 700px;
+    height: auto;
     }
-    /* Estilo inicial de la imagen (oculta y desplazada hacia abajo) */
     #birthdayImage {
     opacity: 0;
     transform: translateY(20px);
     z-index: 2;
-    
-}
+    }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.2/gsap.min.js"></script>
 </head>
 <body>
+<!-- Menú -->
+<div class="menu">
+    <button class="menu-button" onclick="toggleMenu()">☰ Menú</button>
+    <div class="menu-dropdown" id="menuDropdown">
+        <a href="#" class="menu-item" onclick="closeMenu()">🏠 Inicio</a>
+        <a href="/sunflower" class="menu-item">🌻 Girasol Especial</a>
+        <a href="#" class="menu-item" onclick="showMoreMessages()">💝 Más Mensajes</a>
+        <a href="#" class="menu-item" onclick="showGallery()">📸 Galería</a>
+    </div>
+</div>
+
 <div class="loader" id="loader">
     <img src="https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/nota_importante.png" alt="Cargando..." class="loader-img">
 </div>
 <div class="confetti" id="confetti"></div>
 <h1 id="birthdayTitle">
-    <span>¡</span><span>F</span><span>E</span><span>L</span><span>I</span><span>Z</span><span> </span>
+    <span>¡</span><span>F</span><span>E</span><span>L</span><span>I</span><span>Z</span><span> </span>
     <span>C</span><span>U</span><span>M</span><span>P</span><span>L</span><span>E</span><span>A</span><span>Ñ</span><span>O</span><span>S</span><span>!</span>
 </h1>
 
-<!-- Inserta la imagen de cumpleaños aquí -->
 <img id="birthdayImage" src="https://raw.githubusercontent.com/JDNG111/feliz_cumple/main/nube_de_ideas.png" alt="Nube de Ideas" style="width: 300px; height: auto; margin-bottom: 0px;">
 
-
-<!-- Mensaje de cumpleaños -->
 <div class="birthday-message" id="birthdayMessage">
     Que este nuevo año de vida esté lleno de bendiciones, amor y alegría. Que Dios te guíe y proteja siempre.<br>
     "El Señor te bendiga y te guarde; el Señor haga resplandecer su rostro sobre ti, y tenga de ti misericordia."<br>
     <strong>- Números 6:24-25</strong>
 </div>
 
-<!-- Reproductor de música -->
 <div class="music-player">
     <button onclick="prevSong()">⏮️</button>
     <button onclick="togglePlayPause()">⏯️</button>
@@ -233,13 +298,40 @@
     <audio id="audioPlayer"></audio>
 </div>
 
-<!-- Emojis en las esquinas -->
 <div class="emoji top-left">🎉</div>
 <div class="emoji top-right">🎂</div>
 <div class="emoji bottom-left">🎁</div>
 <div class="emoji bottom-right">🎈</div>
 
 <script>
+    // Función para toggle del menú
+    function toggleMenu() {
+        const dropdown = document.getElementById('menuDropdown');
+        dropdown.classList.toggle('active');
+    }
+    
+    function closeMenu() {
+        document.getElementById('menuDropdown').classList.remove('active');
+    }
+    
+    function showMoreMessages() {
+        alert('¡Aquí podrás ver más mensajes especiales muy pronto! 💝');
+        closeMenu();
+    }
+    
+    function showGallery() {
+        alert('¡Galería de fotos próximamente! 📸');
+        closeMenu();
+    }
+    
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const menu = document.querySelector('.menu');
+        if (!menu.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
     // Anime.js Confetti Animation
     function createConfetti() {
         for (let i = 0; i < 100; i++) {
@@ -274,34 +366,30 @@
             document.getElementById('birthdayTitle').style.visibility = 'visible';
             animateTitle();
         }, 1000);
-        playMusic(); // Iniciar la música automáticamente después del loader
+        playMusic();
     }, 5000);
 
-    // GSAP Animación del título
-function animateTitle() {
-    gsap.fromTo("#birthdayTitle span", { opacity: 0, y: -50 }, {
-        opacity: 1,
-        y: 0,
-        stagger: 0.1,
-        duration: 0.5,
-        ease: "back.out(1.7)",
-        onComplete: () => {
-            // Animar la imagen de cumpleaños
-            gsap.to("#birthdayImage", {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: "power2.out"
-            });
+    function animateTitle() {
+        gsap.fromTo("#birthdayTitle span", { opacity: 0, y: -50 }, {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.5,
+            ease: "back.out(1.7)",
+            onComplete: () => {
+                gsap.to("#birthdayImage", {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power2.out"
+                });
 
-            document.getElementById('birthdayMessage').classList.add('message-visible');
-            animateBalloons(); // Iniciar animación de globos después del título
-        }
-    });
-}
+                document.getElementById('birthdayMessage').classList.add('message-visible');
+                animateBalloons();
+            }
+        });
+    }
 
-
-    // GSAP Animación de los globos
     function animateBalloons() {
         const colors = ['#ff69b4', '#ff4500', '#ffa500', '#ff6347', '#ff1493', '#ffd700'];
         for (let i = 0; i < 30; i++) {
@@ -322,7 +410,6 @@ function animateTitle() {
         }
     }
 
-    // Reproductor de música
     const audioPlayer = document.getElementById('audioPlayer');
     const nowPlaying = document.getElementById('nowPlaying');
     let currentSong = 0;
